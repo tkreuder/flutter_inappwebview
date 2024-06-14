@@ -1,4 +1,4 @@
-name: flutter_inappwebview
+name: inappwebview_manuito
 
 publish_to: 'none' # Optional, to prevent accidental publishing
 
@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
 
 dependency_overrides:
+  flutter_inappwebview:
+    path: ./flutter_inappwebview
   flutter_inappwebview_android:
     path: ./flutter_inappwebview_android
   flutter_inappwebview_ios:
