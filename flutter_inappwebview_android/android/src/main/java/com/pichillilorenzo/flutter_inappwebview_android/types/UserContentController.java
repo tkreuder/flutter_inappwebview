@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 @SuppressLint("RestrictedApi")
@@ -54,7 +53,7 @@ public class UserContentController implements Disposable {
   @Nullable
   public WebView webView;
 
-  public UserContentController(@Nullable WebView webView) {
+  public UserContentController(WebView webView) {
     this.webView = webView;
   }
 
@@ -198,7 +197,9 @@ public class UserContentController implements Disposable {
 
   public boolean addUserOnlyScript(UserScript userOnlyScript) {
     ContentWorld contentWorld = userOnlyScript.getContentWorld();
-    contentWorlds.add(contentWorld);
+    if (contentWorld != null) {
+      contentWorlds.add(contentWorld);
+    }
     this.updateContentWorldsCreatorScript();
     if (webView != null && userOnlyScript.getInjectionTime() == UserScriptInjectionTime.AT_DOCUMENT_START
             && WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
@@ -227,17 +228,17 @@ public class UserContentController implements Disposable {
       }
       this.updateContentWorldsCreatorScript();
     }
-    return Objects.requireNonNull(this.userOnlyScripts.get(userOnlyScript.getInjectionTime())).remove(userOnlyScript);
+    return this.userOnlyScripts.get(userOnlyScript.getInjectionTime()).remove(userOnlyScript);
   }
 
   public boolean removeUserOnlyScriptAt(int index, UserScriptInjectionTime injectionTime) {
-    UserScript userOnlyScript = new ArrayList<>(Objects.requireNonNull(this.userOnlyScripts.get(injectionTime))).get(index);
+    UserScript userOnlyScript = new ArrayList<>(this.userOnlyScripts.get(injectionTime)).get(index);
     return this.removeUserOnlyScript(userOnlyScript);
   }
 
   public void removeAllUserOnlyScripts() {
     if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
-      for (UserScript userOnlyScript : Objects.requireNonNull(this.userOnlyScripts.get(UserScriptInjectionTime.AT_DOCUMENT_START))) {
+      for (UserScript userOnlyScript : this.userOnlyScripts.get(UserScriptInjectionTime.AT_DOCUMENT_START)) {
         ScriptHandler scriptHandler = this.scriptHandlerMap.get(userOnlyScript);
         if (scriptHandler != null) {
           scriptHandler.remove();
@@ -245,8 +246,8 @@ public class UserContentController implements Disposable {
         }
       }
     }
-    Objects.requireNonNull(this.userOnlyScripts.get(UserScriptInjectionTime.AT_DOCUMENT_START)).clear();
-    Objects.requireNonNull(this.userOnlyScripts.get(UserScriptInjectionTime.AT_DOCUMENT_END)).clear();
+    this.userOnlyScripts.get(UserScriptInjectionTime.AT_DOCUMENT_START).clear();
+    this.userOnlyScripts.get(UserScriptInjectionTime.AT_DOCUMENT_END).clear();
   }
 
   public LinkedHashSet<PluginScript> getPluginScriptsAt(UserScriptInjectionTime injectionTime) {
@@ -266,7 +267,9 @@ public class UserContentController implements Disposable {
 
   public boolean addPluginScript(PluginScript pluginScript) {
     ContentWorld contentWorld = pluginScript.getContentWorld();
-    contentWorlds.add(contentWorld);
+    if (contentWorld != null) {
+      contentWorlds.add(contentWorld);
+    }
     this.updateContentWorldsCreatorScript();
     if (webView != null && pluginScript.getInjectionTime() == UserScriptInjectionTime.AT_DOCUMENT_START
             && WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
@@ -277,7 +280,7 @@ public class UserContentController implements Disposable {
       );
       this.scriptHandlerMap.put(pluginScript, scriptHandler);
     }
-    return Objects.requireNonNull(this.pluginScripts.get(pluginScript.getInjectionTime())).add(pluginScript);
+    return this.pluginScripts.get(pluginScript.getInjectionTime()).add(pluginScript);
   }
 
   public void addPluginScripts(List<PluginScript> pluginScripts) {
@@ -295,12 +298,12 @@ public class UserContentController implements Disposable {
       }
       this.updateContentWorldsCreatorScript();
     }
-    return Objects.requireNonNull(this.pluginScripts.get(pluginScript.getInjectionTime())).remove(pluginScript);
+    return this.pluginScripts.get(pluginScript.getInjectionTime()).remove(pluginScript);
   }
 
   public void removeAllPluginScripts() {
     if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
-      for (PluginScript pluginScript : Objects.requireNonNull(this.pluginScripts.get(UserScriptInjectionTime.AT_DOCUMENT_START))) {
+      for (PluginScript pluginScript : this.pluginScripts.get(UserScriptInjectionTime.AT_DOCUMENT_START)) {
         ScriptHandler scriptHandler = this.scriptHandlerMap.get(pluginScript);
         if (scriptHandler != null) {
           scriptHandler.remove();
@@ -308,8 +311,8 @@ public class UserContentController implements Disposable {
         }
       }
     }
-    Objects.requireNonNull(this.pluginScripts.get(UserScriptInjectionTime.AT_DOCUMENT_START)).clear();
-    Objects.requireNonNull(this.pluginScripts.get(UserScriptInjectionTime.AT_DOCUMENT_END)).clear();
+    this.pluginScripts.get(UserScriptInjectionTime.AT_DOCUMENT_START).clear();
+    this.pluginScripts.get(UserScriptInjectionTime.AT_DOCUMENT_END).clear();
   }
 
   public LinkedHashSet<UserScript> getUserOnlyScriptAsList() {
