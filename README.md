@@ -2,6 +2,7 @@ PR merged:
 - 2156
 - 2182
 - 2120
+- Increased wekkit to 1.10.0 (should fix "incompatibleclasschangeerror:" found interface androidx.webkit.scripthandler)
 
 
 <div align="center">
